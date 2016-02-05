@@ -222,15 +222,40 @@ void BaseOFServer::free_data(void* data) {
     BaseOFConnection::free_data(data);
 }
 
+static std::string get_in_addr(struct sockaddr *addr)
+{
+    const char* ret = NULL;
+
+    if (addr->sa_family == AF_INET) {
+        struct sockaddr_in* sa = (struct sockaddr_in*) addr;
+
+        char peer[INET_ADDRSTRLEN];
+        ret = evutil_inet_ntop(AF_INET, &sa->sin_addr, peer, sizeof(peer));
+
+        return ret ? (std::string(ret) + ':' + std::to_string(sa->sin_port)) : std::string();
+    } else if (addr->sa_family == AF_INET6) {
+        struct sockaddr_in6* sa = (struct sockaddr_in6*) addr;
+
+        char peer[INET6_ADDRSTRLEN];
+        ret = evutil_inet_ntop(AF_INET, &sa->sin6_addr, peer, sizeof(peer));
+
+        return ret ? (std::string("[") + std::string(ret) + ']' + std::to_string(sa->sin6_port)) : std::string();
+    }
+
+    return std::string();
+}
+
 /* Internal libevent callbacks */
 void BaseOFServer::LibEventBaseOFServer::conn_accept_cb(struct evconnlistener *listener,
                            evutil_socket_t fd,
                            struct sockaddr *address,
                            int socklen,
                            void *arg) {
+
     BaseOFServer* ofserver = static_cast<BaseOFServer*>(arg);
     int id = ofserver->nconn++;
-    BaseOFConnection* c = new BaseOFConnection(id, ofserver, ofserver->choose_eventloop(), fd, ofserver->secure);
+    std::string saddr = get_in_addr(address);
+    BaseOFConnection* c = new BaseOFConnection(id, ofserver, ofserver->choose_eventloop(), fd, ofserver->secure, saddr);
 }
 
 void BaseOFServer::LibEventBaseOFServer::conn_accept_error_cb(struct evconnlistener *listener,

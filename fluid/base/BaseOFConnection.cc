@@ -158,8 +158,10 @@ BaseOFConnection::BaseOFConnection(int id,
                         BaseOFHandler* ofhandler,
                         EventLoop* evloop,
                         int fd,
-                        bool secure) {
+                        bool secure,
+                        std::string peer_address) {
     this->id = id;
+    this->peer_address = peer_address;
     // TODO: move event_base to BaseOFConnection::LibEventBaseOFConnection so
     // we don't need to store this here
     this->evloop = evloop;
@@ -246,6 +248,10 @@ void* BaseOFConnection::get_manager() {
 
 int BaseOFConnection::get_id() {
     return this->id;
+}
+
+std::string BaseOFConnection::get_peer_address() {
+    return this->peer_address;
 }
 
 void BaseOFConnection::close() {

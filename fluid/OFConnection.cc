@@ -8,6 +8,7 @@ OFConnection::OFConnection(BaseOFConnection* c, OFHandler* ofhandler) {
     this->conn = c;
     this->conn->set_manager(this);
     this->id = c->get_id();
+    this->peer_address = c->get_peer_address();
     this->set_state(STATE_HANDSHAKE);
     this->set_alive(true);
     this->set_version(0);
@@ -16,6 +17,10 @@ OFConnection::OFConnection(BaseOFConnection* c, OFHandler* ofhandler) {
 
 int OFConnection::get_id() {
     return this->id;
+}
+
+std::string OFConnection::get_peer_address() {
+    return this->peer_address;
 }
 
 bool OFConnection::is_alive() {

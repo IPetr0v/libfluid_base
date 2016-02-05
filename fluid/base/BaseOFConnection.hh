@@ -4,6 +4,7 @@
 
 #include <stdlib.h>
 #include <vector>
+#include <string>
 
 #include "fluid/base/EventLoop.hh"
 
@@ -36,7 +37,8 @@ public:
                      BaseOFHandler* ofhandler,
                      EventLoop* evloop,
                      int fd,
-                     bool secure);
+                     bool secure,
+                     std::string peer_address);
     virtual ~BaseOFConnection();
 
     /** BaseOFConnection events. */
@@ -103,6 +105,11 @@ public:
     int get_id();
 
     /**
+    Get switch IP address.
+    */
+    std::string get_peer_address();
+
+    /**
     Close this connection. It won't be closed immediately (remaining connection
     and message callbacks may still be called).
 
@@ -129,6 +136,7 @@ private:
     void* manager;
     bool secure;
     BaseOFHandler* ofhandler;
+    std::string peer_address;
 
     bool running;
     

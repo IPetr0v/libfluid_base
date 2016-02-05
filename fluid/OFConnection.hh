@@ -68,6 +68,9 @@ public:
     /** Get the connection ID. */
     int get_id();
 
+    /** Get switch IP address. */
+    std::string get_peer_address();
+
     /** Check if the connection is alive (responding to echo requests). */
     bool is_alive();
 
@@ -154,6 +157,7 @@ public:
 private:
     BaseOFConnection* conn;
     int id;
+    std::string peer_address;
     State state;
     uint8_t version;
     bool alive;
