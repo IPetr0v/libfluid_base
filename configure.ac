@@ -9,8 +9,8 @@ AC_SUBST([LIBFLUID_BASE_SO_VERSION], [0:0:0])
 
 AC_CONFIG_FILES([Makefile libfluid_base.pc])
 
-PKG_CHECK_MODULES([libevent], [libevent >= 2.0.16-stable])
-PKG_CHECK_MODULES([libevent_pthreads], [libevent_pthreads >= 2.0.16-stable])
+PKG_CHECK_MODULES([libevent], [libevent >= 2.1.5])
+PKG_CHECK_MODULES([libevent_pthreads], [libevent_pthreads >= 2.1.5])
 
 AC_ARG_ENABLE([tls],
      AS_HELP_STRING(--disable-tls, Disable TLS support),
@@ -18,7 +18,7 @@ AC_ARG_ENABLE([tls],
 
 AM_CONDITIONAL(TLS, false)
 if test x$enable_tls != xno; then
-  PKG_CHECK_MODULES([libevent_openssl], [libevent_openssl >= 2.0.16-stable])
+  PKG_CHECK_MODULES([libevent_openssl], [libevent_openssl >= 2.1.5])
   AC_DEFINE(HAVE_TLS, 1, [Define if the system has OpenSSL TLS support])
   AM_CONDITIONAL(TLS, true)
 fi
