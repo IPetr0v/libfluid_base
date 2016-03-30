@@ -18,6 +18,7 @@
 
 #include <string>
 #include <sstream>
+#include <sstream>
 
 namespace fluid_base {
 
@@ -225,24 +226,25 @@ void BaseOFServer::free_data(void* data) {
 static std::string get_in_addr(struct sockaddr *addr)
 {
     const char* ret = NULL;
+    std::ostringstream sret;
 
     if (addr->sa_family == AF_INET) {
         struct sockaddr_in* sa = (struct sockaddr_in*) addr;
 
         char peer[INET_ADDRSTRLEN];
-        ret = evutil_inet_ntop(AF_INET, &sa->sin_addr, peer, sizeof(peer));
-
-        return ret ? (std::string(ret) + ':' + std::to_string(sa->sin_port)) : std::string();
+        if (ret = evutil_inet_ntop(AF_INET, &sa->sin_addr, peer, sizeof(peer))) {
+            sret << ret << ':' << sa->sin_port;
+        }
     } else if (addr->sa_family == AF_INET6) {
         struct sockaddr_in6* sa = (struct sockaddr_in6*) addr;
 
         char peer[INET6_ADDRSTRLEN];
-        ret = evutil_inet_ntop(AF_INET, &sa->sin6_addr, peer, sizeof(peer));
-
-        return ret ? (std::string("[") + std::string(ret) + ']' + std::to_string(sa->sin6_port)) : std::string();
+        if (ret = evutil_inet_ntop(AF_INET, &sa->sin6_addr, peer, sizeof(peer))) {
+            sret << '[' << ret << "]:" << sa->sin6_port;
+        }
     }
 
-    return std::string();
+    return sret.str();
 }
 
 /* Internal libevent callbacks */
