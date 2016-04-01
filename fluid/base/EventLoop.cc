@@ -57,7 +57,7 @@ void EventLoop::run() {
     // See note in EventLoop::EventLoop. Here we disable the virtual event
     // to guarantee that nothing blocks.
     //event_base_del_virtual(this->m_implementation->base);
-    event_base_loop(this->m_implementation->base, EVLOOP_NONBLOCK);
+    event_base_loop(this->m_implementation->base, EVLOOP_NO_EXIT_ON_EMPTY);
 }
 
 void EventLoop::stop() {
