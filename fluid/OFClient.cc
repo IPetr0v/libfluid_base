@@ -4,8 +4,8 @@
 namespace fluid_base {
 
 OFClient::OFClient(int id, std::string address, int port,
-             const struct OFServerSettings ofsc) :
-        BaseOFClient(id, address, port) {
+              struct OFServerSettings ofsc) :
+        BaseOFClient(id, address, port, ofsc.evloop()) {
     this->ofsc = ofsc;
     this->conn = NULL;
 }
@@ -159,7 +159,7 @@ void OFClient::base_connection_callback(BaseOFConnection* c, BaseOFConnection::E
             c->send(&msg, 8);
         }
 
-		this->conn = new OFConnection(c, this);
+        this->conn = new OFConnection(c, this);
         connection_callback(this->conn, OFConnection::EVENT_STARTED);
     }
     else if (event_type == BaseOFConnection::EVENT_DOWN) {

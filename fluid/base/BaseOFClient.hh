@@ -26,8 +26,10 @@ public:
                     attributed to event loops running on threads on a
                     round-robin fashion. The first event loop will listen for
                     new connections.
+    @param evloop an event loop already created or NULL in the 
+                  case of a new event loop creation.
     */
-    BaseOFClient(int id, std::string address, int port);
+    BaseOFClient(int id, std::string address, int port, EventLoop* evloop);
     ~BaseOFClient();
 
     /**

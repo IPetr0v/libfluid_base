@@ -11,7 +11,7 @@
 
 using namespace fluid_base;
 
-BaseOFClient::BaseOFClient(int id, std::string address, int port) {
+BaseOFClient::BaseOFClient(int id, std::string address, int port, EventLoop* evloop) {
     // Prepare libevent for threads
     // This will leave a small, insignificant leak for us.
     // See: http://archives.seul.org/libevent/users/Jul-2011/msg00028.html
@@ -22,7 +22,12 @@ BaseOFClient::BaseOFClient(int id, std::string address, int port) {
     this->id = id;
     this->address = address;
     this->port = port;
-    this->evloop = new EventLoop(0);
+    if (evloop){
+        this->evloop = evloop;    
+    }
+    else {
+        this->evloop = new EventLoop(0);
+    }
 }
 
 BaseOFClient::~BaseOFClient() {
