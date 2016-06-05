@@ -72,7 +72,7 @@ void OFServer::base_message_callback(BaseOFConnection* c, void* data, size_t len
     // request arrives.
 
     // Handle echo requests
-    if (ofsc.liveness_check() and type == OFPT_ECHO_REQUEST) {
+    if (type == OFPT_ECHO_REQUEST) {
         // Just change the type and send back
         ((uint8_t*) data)[1] = OFPT_ECHO_REPLY;
         c->send(data, ntohs(((uint16_t*) data)[1]));
