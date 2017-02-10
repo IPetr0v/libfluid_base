@@ -111,6 +111,6 @@ protected:
     static void* send_echo(void* arg);
 };
 
-}
+} // namespace fluid_base
 
 #endif

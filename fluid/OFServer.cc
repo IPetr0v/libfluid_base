@@ -124,7 +124,7 @@ void OFServer::base_message_callback(BaseOFConnection* c, void* data, size_t len
     // Handle echo replies (by registering them)
     if (ofsc.liveness_check() and type == OFPT_ECHO_REPLY) {
         if (ntohl(((uint32_t*) data)[1]) == ECHO_XID) {
-            cc->set_alive(true);
+            cc->reset_echo_counter(ofsc.echo_attempts());
         }
 
         if (ofsc.dispatch_all_messages()) goto dispatch; else goto done;
@@ -211,6 +211,7 @@ void OFServer::base_connection_callback(BaseOFConnection* c, BaseOFConnection::E
         ofconnections[conn_id] = cc;
         unlock_ofconnections();
 
+        cc->reset_echo_counter(ofsc.echo_attempts());
         connection_callback(cc, OFConnection::EVENT_STARTED);
     }
     else if (event_type == BaseOFConnection::EVENT_DOWN) {
@@ -224,7 +225,8 @@ void OFServer::base_connection_callback(BaseOFConnection* c, BaseOFConnection::E
 void* OFServer::send_echo(void* arg) {
     OFConnection* cc = static_cast<OFConnection*>(arg);
 
-    if (!cc->is_alive()) {
+    if (!cc->decrease_echo_counter()) { // decrease counter and check that attempts >0
+        cc->set_alive(false);
         cc->close();
         cc->get_ofhandler()->connection_callback(cc, OFConnection::EVENT_DEAD);
         return NULL;
@@ -237,7 +239,6 @@ void* OFServer::send_echo(void* arg) {
     ((uint16_t*) msg)[1] = htons(8);
     ((uint32_t*) msg)[1] = htonl(ECHO_XID);
 
-    cc->set_alive(false);
     cc->send(msg, 8);
 
     return NULL;

@@ -6,7 +6,8 @@ OFServerSettings::OFServerSettings() {
 	this->_supported_versions = 0;
     this->add_version(1);
     this->version_set_by_hand = false;
-    this->echo_interval(15);
+    this->echo_interval(5);
+    this->echo_attempts(3);
     this->liveness_check(true);
     this->handshake(true);
     this->dispatch_all_messages(false);
@@ -47,7 +48,7 @@ uint32_t* OFServerSettings::supported_versions() {
     return &this->_supported_versions;
 }
 
-uint8_t OFServerSettings::max_supported_version() {
+uint8_t OFServerSettings::max_supported_version() const {
     return this->_max_supported_version;
 }
 
@@ -56,8 +57,17 @@ OFServerSettings& OFServerSettings::echo_interval(const int ei) {
     return *this;
 }
 
-int OFServerSettings::echo_interval() {
+int OFServerSettings::echo_interval() const {
     return this->_echo_interval;
+}
+
+OFServerSettings& OFServerSettings::echo_attempts(const int ea) {
+    this->_echo_attempts = ea;
+    return *this;
+}
+
+int OFServerSettings::echo_attempts() const {
+    return this->_echo_attempts;
 }
 
 OFServerSettings& OFServerSettings::liveness_check(const bool liveness_check) {
@@ -65,7 +75,7 @@ OFServerSettings& OFServerSettings::liveness_check(const bool liveness_check) {
     return *this;
 }
 
-bool OFServerSettings::liveness_check() {
+bool OFServerSettings::liveness_check() const {
     return this->_liveness_check;
 }
 
@@ -74,7 +84,7 @@ OFServerSettings& OFServerSettings::handshake(const bool handshake) {
     return *this;
 }
 
-bool OFServerSettings::handshake() {
+bool OFServerSettings::handshake() const {
     return this->_handshake;
 }
 
@@ -83,11 +93,11 @@ OFServerSettings& OFServerSettings::dispatch_all_messages(const bool dispatch_al
     return *this;
 }
 
-bool OFServerSettings::dispatch_all_messages() {
+bool OFServerSettings::dispatch_all_messages() const {
     return this->_dispatch_all_messages;
 }
 
-bool OFServerSettings::use_hello_elements() {
+bool OFServerSettings::use_hello_elements() const {
     return this->_use_hello_elements;
 }
 
@@ -96,7 +106,7 @@ OFServerSettings& OFServerSettings::use_hello_elements(const bool use_hello_elem
     return *this;
 }
 
-bool OFServerSettings::keep_data_ownership() {
+bool OFServerSettings::keep_data_ownership() const {
     return this->_keep_data_ownership;
 }
 

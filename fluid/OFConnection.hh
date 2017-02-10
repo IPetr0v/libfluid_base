@@ -66,21 +66,31 @@ public:
     };
 
     /** Get the connection ID. */
-    int get_id();
+    int get_id() const;
 
     /** Get switch IP address. */
-    std::string get_peer_address();
+    std::string get_peer_address() const;
 
     /** Check if the connection is alive (responding to echo requests). */
-    bool is_alive();
+    bool is_alive() const;
 
     /** Update the liveness state of the connection. */
     void set_alive(bool alive);
 
+    /** Reset counter for closing connection. */
+    void reset_echo_counter(int max_attempts);
+
+    /**
+    Decrease counter for closing connection.
+    Return false, if there aren't echo attempts
+    annd true otherwise.
+    */
+    bool decrease_echo_counter();
+
     /**
     Get the connection state. See #OFConnection::State.
     */
-    uint8_t get_state();
+    uint8_t get_state() const;
 
     /**
     Set the connection state. See #OFConnection::State.
@@ -93,7 +103,7 @@ public:
     Get the negotiated OpenFlow version for the connection (OpenFlow protocol
     version number). Note that this is not an OFVersion value. It is the value
     that goes into the OpenFlow header (e.g.: 4 for OpenFlow 1.3). */
-    uint8_t get_version();
+    uint8_t get_version() const;
 
     /**
     Set a negotiated version for the connection. (OpenFlow protocol version
@@ -107,7 +117,7 @@ public:
     /**
     Return the OFHandler instance responsible for the connection.
     */
-    OFHandler* get_ofhandler();
+    OFHandler* get_ofhandler() const;
 
     /**
     Send data to through the connection.
@@ -137,7 +147,7 @@ public:
     Get application data. This data is any piece of data you might want to 
     associated with this OFConnection object.
     */
-    void* get_application_data();
+    void* get_application_data() const;
 
     /**
     Set application data. 
@@ -161,6 +171,7 @@ private:
     State state;
     uint8_t version;
     bool alive;
+    int echo_to_disc;
     OFHandler* ofhandler;
     void* application_data;
 };

@@ -15,15 +15,15 @@ OFConnection::OFConnection(BaseOFConnection* c, OFHandler* ofhandler) {
     this->application_data = NULL;
 }
 
-int OFConnection::get_id() {
+int OFConnection::get_id() const {
     return this->id;
 }
 
-std::string OFConnection::get_peer_address() {
+std::string OFConnection::get_peer_address() const {
     return this->peer_address;
 }
 
-bool OFConnection::is_alive() {
+bool OFConnection::is_alive() const {
     return this->alive;
 }
 
@@ -31,7 +31,20 @@ void OFConnection::set_alive(bool alive) {
     this->alive = alive;
 }
 
-uint8_t OFConnection::get_state() {
+void OFConnection::reset_echo_counter(int max_attempts) {
+    this->echo_to_disc = max_attempts;
+}
+
+bool OFConnection::decrease_echo_counter() {
+    if (this->echo_to_disc > 0) {
+        this->echo_to_disc--;
+        return true;
+    }
+
+    return false;
+}
+
+uint8_t OFConnection::get_state() const {
     return state;
 }
 
@@ -39,7 +52,7 @@ void OFConnection::set_state(OFConnection::State state) {
     this->state = state;
 }
 
-uint8_t OFConnection::get_version() {
+uint8_t OFConnection::get_version() const {
     return this->version;
 }
 
@@ -47,7 +60,7 @@ void OFConnection::set_version(uint8_t version) {
     this->version = version;
 }
 
-OFHandler* OFConnection::get_ofhandler() {
+OFHandler* OFConnection::get_ofhandler() const {
     return this->ofhandler;
 }
 
@@ -63,7 +76,7 @@ void OFConnection::add_timed_callback(void* (*cb)(void*),
         this->conn->add_timed_callback(cb, interval, arg);
 }
 
-void* OFConnection::get_application_data() {
+void* OFConnection::get_application_data() const {
     return this->application_data;
 }
 

@@ -22,7 +22,8 @@ public:
 
     Settings will have the following values by default:
     - Only OpenFlow 1.0 is supported (a sane value for the most compatibility)
-    - `echo_interval`: `15`
+    - `echo_interval`: `5`
+    - `echo_attempts`: `3`
     - `liveness_check`: `true`
     - `handshake`: `true`
     - `dispatch_all_messages`: `false`
@@ -53,11 +54,11 @@ public:
     /**
     Return the largest version number supported.
     */
-    uint8_t max_supported_version();
+    uint8_t max_supported_version() const;
 
     /**
     Set the OpenFlow echo interval (in seconds). A connection will be closed if
-    no echo replies arrive in this interval, and echo requests will be
+    no echo replies arrive in this interval echo_attempts times, and echo requests will be
     periodically sent using the same interval.
 
     @param echo_interval the echo interval (in seconds)
@@ -67,7 +68,20 @@ public:
     /**
     Return the echo interval.
     */
-    int echo_interval();
+    int echo_interval() const;
+
+    /**
+    Set the counter of echo requests. If we don't get echo replies after
+    specified attempts, connection will be closed
+
+    @param echo_attempts the echo attemtps (counter)
+    */
+    OFServerSettings& echo_attempts(const int echo_attempts);
+
+    /**
+    Return the echo attempts
+    */
+    int echo_attempts() const;
 
     /**
     Set whether the OFServer instance should perform liveness checks (timed
@@ -80,7 +94,7 @@ public:
     /**
     Return whether liveness check should be performed.
     */
-    bool liveness_check();
+    bool liveness_check() const;
 
     /**
     Set whether the OFServer instance should perform OpenFlow handshakes (hello
@@ -93,7 +107,7 @@ public:
     /**
     Return whether handshake should be performed.
     */
-    bool handshake();
+    bool handshake() const;
 
     /**
     Set whether the OFServer instance should forward all OpenFlow messages to
@@ -107,7 +121,7 @@ public:
     /**
     Return whether all messages should be dispatched.
     */
-    bool dispatch_all_messages();
+    bool dispatch_all_messages() const;
 
     /**
     Set whether the OFServer instance should send and treat OpenFlow 1.3.1
@@ -122,7 +136,7 @@ public:
     /**
     Return whether hello elements should be used.
     */
-    bool use_hello_elements();
+    bool use_hello_elements() const;
 
     /**
     Set whether the OFServer instance should own and manage the message data
@@ -141,7 +155,7 @@ public:
     Return whether message data pointer ownership belongs to OFServer (true) or
     your application (false).
     */
-    bool keep_data_ownership();
+    bool keep_data_ownership() const;
     
     private:
         friend class OFServer;
@@ -153,6 +167,7 @@ public:
         void add_version(const uint8_t version);
 
         int _echo_interval;
+        int _echo_attempts;
         bool _liveness_check;
         bool _handshake;
         bool _dispatch_all_messages;
@@ -160,6 +175,6 @@ public:
         bool _keep_data_ownership;
 };
 
-}
+} // namespace fluid_base
 
 #endif
