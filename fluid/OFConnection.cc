@@ -71,9 +71,10 @@ void OFConnection::send(void* data, size_t len) {
 
 void OFConnection::add_timed_callback(void* (*cb)(void*),
                                       int interval,
-                                      void* arg) {
+                                      void* arg,
+                                      bool is_infinite) {
     if (this->conn != NULL)
-        this->conn->add_timed_callback(cb, interval, arg);
+        this->conn->add_timed_callback(cb, interval, arg, is_infinite);
 }
 
 void* OFConnection::get_application_data() const {

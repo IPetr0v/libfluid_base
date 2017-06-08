@@ -222,7 +222,7 @@ void BaseOFConnection::send(void* data, size_t len) {
     bufferevent_write(this->m_implementation->bev, data, len);
 }
 
-void BaseOFConnection::add_timed_callback(void* (*cb)(void*), int interval, void* arg) {
+void BaseOFConnection::add_timed_callback(void* (*cb)(void*), int interval, void* arg, bool is_infinite) {
     struct timeval tv = { interval / 1000, (interval % 1000) * 1000 };
     struct timed_callback* tc = new struct timed_callback;
     tc->cb = cb;
@@ -230,7 +230,7 @@ void BaseOFConnection::add_timed_callback(void* (*cb)(void*), int interval, void
     struct event_base* base = (struct event_base*) this->evloop->get_base();
     struct event* ev = event_new(base,
                                  -1,
-                                 EV_PERSIST,
+                                 is_infinite ? EV_PERSIST : EV_TIMEOUT,
                                  BaseOFConnection::LibEventBaseOFConnection::timer_callback,
                                  tc);
     tc->data = ev;

@@ -5,6 +5,7 @@
 #include <pthread.h>
 
 #include <map>
+#include <set>
 
 #include "base/BaseOFConnection.hh"
 #include "base/BaseOFServer.hh"
@@ -96,6 +97,7 @@ public:
 protected:
     OFServerSettings ofsc;
     std::map<int, OFConnection*> ofconnections;
+    std::set<int> unsafe_connection_ids;
     pthread_mutex_t ofconnections_lock;
     
     inline void lock_ofconnections() {
@@ -108,6 +110,7 @@ protected:
 
     void base_message_callback(BaseOFConnection* c, void* data, size_t len);
     void base_connection_callback(BaseOFConnection* c, BaseOFConnection::Event event_type);
+    static void* check_features_reply(void* arg);
     static void* send_echo(void* arg);
 };
 

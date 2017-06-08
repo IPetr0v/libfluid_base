@@ -139,7 +139,7 @@ public:
     @param interval interval in milisseconds
     @param arg an argument to the callback function
     */
-    void add_timed_callback(void* (*cb)(void*), int interval, void* arg);
+    void add_timed_callback(void* (*cb)(void*), int interval, void* arg, bool is_infinite = true);
     // TODO: add the option for the function to unschedule itself by returning
     // false
 

@@ -63,7 +63,7 @@ void OFServer::base_message_callback(BaseOFConnection* c, void* data, size_t len
     uint8_t version = ((uint8_t*) data)[0];
     uint8_t type = ((uint8_t*) data)[1];
     OFConnection* cc = (OFConnection*) c->get_manager();
-    
+
     // We trust that the other end is using the negotiated protocol version
     // after the handshake is done. Should we?
 
@@ -139,6 +139,20 @@ void OFServer::base_message_callback(BaseOFConnection* c, void* data, size_t len
         connection_callback(cc, OFConnection::EVENT_ESTABLISHED);
 
         goto dispatch;
+    }
+
+    // If handshake() is true and neither OFPT_FEATURES_REPLY nor OFPT_HELLO
+    // has come, we should check the connection in fixed timeout in case of 
+    // OFPT_FEATURES_REPLY has come later 
+    if (ofsc.handshake()) {
+        auto conn_it = unsafe_connection_ids.find(cc->get_id());
+        if (unsafe_connection_ids.end() == conn_it) {
+            unsafe_connection_ids.insert(cc->get_id());
+            printf("Ignoring message type=%u from connection id=%i because it arrived before FeaturesReply\n", 
+                     type, cc->get_id());
+
+            c->add_timed_callback(check_features_reply, ofsc.echo_interval() * 1000, cc, false);
+        }
     }
 
     goto dispatch;
@@ -243,5 +257,17 @@ void* OFServer::send_echo(void* arg) {
 
     return NULL;
 }
+
+void* OFServer::check_features_reply(void* arg) {
+    OFConnection* cc = static_cast<OFConnection*>(arg);
+    if (cc->get_state() != OFConnection::STATE_RUNNING) {
+        // features_reply has NOT come
+        cc->close();
+        cc->get_ofhandler()->connection_callback(cc, OFConnection::EVENT_DEAD);
+    } 
+
+    return NULL;
+}
+
 
 }
