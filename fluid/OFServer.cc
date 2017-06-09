@@ -144,7 +144,7 @@ void OFServer::base_message_callback(BaseOFConnection* c, void* data, size_t len
     // If handshake() is true and neither OFPT_FEATURES_REPLY nor OFPT_HELLO
     // has come, we should check the connection in fixed timeout in case of 
     // OFPT_FEATURES_REPLY has come later 
-    if (ofsc.handshake()) {
+    if (ofsc.handshake() and (cc->get_state() != OFConnection::STATE_RUNNING)) {
         auto conn_it = unsafe_connection_ids.find(cc->get_id());
         if (unsafe_connection_ids.end() == conn_it) {
             unsafe_connection_ids.insert(cc->get_id());
@@ -153,6 +153,8 @@ void OFServer::base_message_callback(BaseOFConnection* c, void* data, size_t len
 
             c->add_timed_callback(check_features_reply, ofsc.echo_interval() * 1000, cc, false);
         }
+
+        goto dispatch;
     }
 
     goto dispatch;
