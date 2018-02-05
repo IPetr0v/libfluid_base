@@ -145,7 +145,7 @@ void OFServer::base_message_callback(BaseOFConnection* c, void* data, size_t len
     // has come, we should check the connection in fixed timeout in case of 
     // OFPT_FEATURES_REPLY has come later 
     if (ofsc.handshake() and (cc->get_state() == OFConnection::STATE_HANDSHAKE)) {
-        auto conn_it = unsafe_connection_ids.find(cc->get_id());
+        std::set<int>::iterator conn_it = unsafe_connection_ids.find(cc->get_id());
         if (unsafe_connection_ids.end() == conn_it) {
             unsafe_connection_ids.insert(cc->get_id());
             printf("Ignoring message type=%u from connection id=%i because it arrived before FeaturesReply\n", 
