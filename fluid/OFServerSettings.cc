@@ -121,7 +121,7 @@ OFServerSettings& OFServerSettings::keep_data_ownership(const bool keep_data_own
     return *this;
 }
 
-bool OFServerSettings::is_controller() {
+bool OFServerSettings::is_controller() const {
     return this->_is_controller;
 }
 
@@ -135,7 +135,7 @@ OFServerSettings& OFServerSettings::datapath_id(const uint64_t di) {
     return *this;
 }
 
-uint64_t OFServerSettings::datapath_id() {
+uint64_t OFServerSettings::datapath_id() const {
     return this->_datapath_id;
 }
 
@@ -144,7 +144,7 @@ OFServerSettings& OFServerSettings::n_buffers(const uint32_t nb) {
     return *this;
 }
 
-uint32_t OFServerSettings::n_buffers() {
+uint32_t OFServerSettings::n_buffers() const {
     return this->_n_buffers;
 }
 
@@ -153,7 +153,7 @@ OFServerSettings& OFServerSettings::n_tables(const uint8_t nt) {
     return *this;
 }
 
-uint8_t OFServerSettings::n_tables() {
+uint8_t OFServerSettings::n_tables() const {
     return this->_n_tables;
 }
 
@@ -162,7 +162,7 @@ OFServerSettings& OFServerSettings::auxiliary_id(const uint8_t ai) {
     return *this;
 }
 
-uint8_t OFServerSettings::auxiliary_id() {
+uint8_t OFServerSettings::auxiliary_id() const {
     return this->_auxiliary_id;
 }
 
@@ -171,7 +171,7 @@ OFServerSettings& OFServerSettings::capabilities(const uint32_t ca) {
     return *this;
 }
 
-uint32_t OFServerSettings::capabilities() {
+uint32_t OFServerSettings::capabilities() const {
     return this->_capabilities;
 }
 

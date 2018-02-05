@@ -187,7 +187,7 @@ public:
     /**
     Return true if instance represents an OpenFlow controller, false for switch.
     */
-    bool is_controller();
+    bool is_controller() const;
 
     /**
     Set the OpenFlow datapath ID. This is relevant for an OpenFlow switch (i.e.
@@ -201,7 +201,7 @@ public:
     /**
     Return the datapath ID.
     */
-    uint64_t datapath_id();
+    uint64_t datapath_id() const;
 
     /**
     Set the switch supported n_buffers. This is relevant for an OpenFlow switch (i.e.
@@ -215,7 +215,7 @@ public:
     /**
     Return the number of buffers.
     */
-    uint32_t n_buffers();
+    uint32_t n_buffers() const;
 
     /**
     Set the switch supported n_tables. This is relevant for an OpenFlow switch (i.e.
@@ -229,7 +229,7 @@ public:
     /**
     Return the number of tables.
     */
-    uint8_t n_tables();
+    uint8_t n_tables() const;
 
     /**
     Set the switch auxiliary ID. This is relevant for an OpenFlow switch (i.e.
@@ -243,7 +243,7 @@ public:
     /**
     Return the auxiliary ID.
     */
-    uint8_t auxiliary_id();
+    uint8_t auxiliary_id() const;
 
     /**
     Set the switch capabilities bitmap. This is relevant for an OpenFlow switch (i.e.
@@ -257,7 +257,7 @@ public:
     /**
     Return the capabilities bitmap.
     */
-    uint32_t capabilities();
+    uint32_t capabilities() const;
 
     private:
         friend class OFServer;
