@@ -45,7 +45,7 @@ public:
            provided, default settings will be used. See OFServerSettings.
     */
     OFClient(int id, std::string address, int port,
-             const struct OFServerSettings ofsc = OFServerSettings().supported_version(0x01).supported_version(0x04).is_controller(false));
+              struct OFServerSettings ofsc = OFServerSettings().supported_version(0x01).supported_version(0x04).is_controller(false));
 
     virtual ~OFClient();
 

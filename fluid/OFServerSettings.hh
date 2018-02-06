@@ -3,6 +3,7 @@
 #define __OFSERVERSETTINGS_HH__
 
 #include <stdint.h>
+#include "fluid/base/EventLoop.hh"
 
 namespace fluid_base {
 
@@ -259,6 +260,16 @@ public:
     */
     uint32_t capabilities() const;
 
+      /**
+    @param evloop the event loop.
+    */
+    OFServerSettings& evloop(EventLoop* evloop);
+
+    /**
+    Return the eventloop
+    */
+    EventLoop* evloop();
+
     private:
         friend class OFServer;
 
@@ -281,6 +292,7 @@ public:
         uint8_t _n_tables;
         uint8_t _auxiliary_id;
         uint32_t _capabilities;
+        EventLoop* _evloop;
 };
 
 } // namespace fluid_base

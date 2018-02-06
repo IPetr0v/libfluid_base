@@ -1,9 +1,10 @@
 #include "fluid/OFServerSettings.hh"
+#include <cstddef>
 
 namespace fluid_base {
 
 OFServerSettings::OFServerSettings() {
-	this->_supported_versions = 0;
+    this->_supported_versions = 0;
     this->add_version(1);
     this->version_set_by_hand = false;
     this->echo_interval(5);
@@ -19,6 +20,7 @@ OFServerSettings::OFServerSettings() {
     this->n_buffers(0);
     this->n_tables(0);
     this->capabilities(0);
+    this->evloop(NULL);
 }
 
 OFServerSettings& OFServerSettings::supported_version(const uint8_t version) {
@@ -173,6 +175,15 @@ OFServerSettings& OFServerSettings::capabilities(const uint32_t ca) {
 
 uint32_t OFServerSettings::capabilities() const {
     return this->_capabilities;
+}
+
+OFServerSettings& OFServerSettings::evloop(EventLoop* evloop) {
+    this->_evloop = evloop;
+    return *this;
+}
+
+EventLoop* OFServerSettings::evloop(){
+    return this->_evloop;
 }
 
 }
