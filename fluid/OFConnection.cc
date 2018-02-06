@@ -81,6 +81,12 @@ void* OFConnection::get_application_data() const {
     return this->application_data;
 }
 
+void OFConnection::add_immediate_event(void* (*cb)(std::shared_ptr<void>), std::shared_ptr<void> arg) {
+    if (this->conn != NULL) {
+        this->conn->add_immediate_event(cb, arg);
+    }
+}
+
 void OFConnection::set_application_data(void* data) {
     this->application_data = data;
 }
