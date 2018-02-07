@@ -3,9 +3,8 @@
 
 namespace fluid_base {
 
-OFClient::OFClient(int id, std::string address, int port,
-              struct OFServerSettings ofsc) :
-        BaseOFClient(id, address, port, ofsc.evloop()) {
+OFClient::OFClient(int thread_num, OFServerSettings ofsc) :
+        BaseOFClient(thread_num) {
     this->ofsc = ofsc;
     this->conn = NULL;
 }
@@ -15,16 +14,15 @@ OFClient::~OFClient() {
         delete conn;
 }
 
-bool OFClient::start(bool block) {
-    return BaseOFClient::start(block);
+bool OFClient::start() {
+    return BaseOFClient::start();
 }
 
-
-void OFClient::start_conn(){
-    BaseOFClient::start_conn();
+void OFClient::add_connection(int id, const std::string& address, int port) {
+    BaseOFClient::add_connection(id, address, port);
 }
 
-void OFClient::stop_conn(){
+void OFClient::stop_conn() {
     if (conn != NULL)
         conn->close();
 }

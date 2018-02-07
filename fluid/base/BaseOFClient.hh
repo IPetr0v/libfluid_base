@@ -5,11 +5,18 @@
 #include <pthread.h>
 
 #include <string>
+#include <vector>
 
 #include <fluid/base/EventLoop.hh>
 #include <fluid/base/BaseOFConnection.hh>
 
-using namespace fluid_base;
+namespace fluid_base {
+
+struct EventLoopThread {
+    pthread_t thread;
+    EventLoop* loop;
+};
+
 /**
 A BaseOFClient manages the very basic functions of an OpenFlow client. It
 connects to a server and wait for messages and connection events. It is an
@@ -21,29 +28,28 @@ public:
     /**
     Create a BaseOFClient.
 
-    @param port listen port
-    @param nevloops number of event loops to run. Connections will be
-                    attributed to event loops running on threads on a
-                    round-robin fashion. The first event loop will listen for
-                    new connections.
-    @param evloop an event loop already created or NULL in the 
-                  case of a new event loop creation.
+    @param thread_num number of event loops to run. Connections will be
+                      attributed to event loops running on threads on a
+                      round-robin fashion.
     */
-    BaseOFClient(int id, std::string address, int port, EventLoop* evloop);
+    BaseOFClient(int thread_num = 1);
+
     ~BaseOFClient();
 
     /**
     Start the client. It will connect at the address and port declared in the
-    constructor and wait for events, optionally blocking the calling thread
-    until BaseOFClient::stop is called.
-
-    @param block block the calling thread while the client is running
+    constructor and wait for events.
     */
-    virtual bool start(bool block = false);
+    virtual bool start();
 
-    virtual void start_conn();
+    /**
+    Add new client connection.
 
-    static void* try_connect(void* arg);
+    @param id connection id
+    @param address address to connect to
+    @param port port to connect to
+    */
+    virtual void add_connection(int id, const std::string& address, int port);
 
     /**
     Stop the client. It will close the connection and signal the event loop to
@@ -54,23 +60,25 @@ public:
     virtual void stop();
 
 
-    virtual void base_connection_callback(BaseOFConnection* conn,
+    virtual void base_connection_callback(BaseOFConnection *conn,
                                           BaseOFConnection::Event event_type);
-    virtual void base_message_callback(BaseOFConnection* conn,
-                                       void* data,
+
+    virtual void base_message_callback(BaseOFConnection *conn,
+                                       void *data,
                                        size_t len) = 0;
-    virtual void free_data(void* data);
+
+    virtual void free_data(void *data);
 
 private:
-    int id;
-    bool blocking;
-    EventLoop* evloop;
-    pthread_t t;
-    pthread_t conn_t;
+    std::vector<EventLoopThread> event_loop_threads;
+    int current_event_loop;
 
-    std::string address;
-    int port;
+    inline pthread_t* get_thread(int loop_id);
+    inline EventLoop* get_loop(int loop_id);
+    EventLoop* choose_event_loop();
 
 };
+
+}
 
 #endif

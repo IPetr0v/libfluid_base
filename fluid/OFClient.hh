@@ -37,27 +37,30 @@ to implement further functionality.
 class OFClient : private BaseOFClient, public OFHandler {
 public:
     /**
-    Create an OFClient.
+    Create a OFClient.
 
-    @param address server address to connect to
-    @param port TCP port to connect to
-    @param ofsc the optional server configuration parameters. If no value is
-           provided, default settings will be used. See OFServerSettings.
+    @param thread_num number of event loops to run. Connections will be
+                      attributed to event loops running on threads on a
+                      round-robin fashion.
     */
-    OFClient(int id, std::string address, int port,
-              struct OFServerSettings ofsc = OFServerSettings().supported_version(0x01).supported_version(0x04).is_controller(false));
+    OFClient(int thread_num = 1, OFServerSettings ofsc = OFServerSettings());
 
     virtual ~OFClient();
 
     /**
     Start the client. It will connect to the address and port declared in the
-    constructor, optionally blocking the calling thread until OFClient::stop is called.
-
-    @param block block the calling thread while the client is running
+    constructor.
     */
-    virtual bool start(bool block = false);
+    virtual bool start();
 
-    virtual void start_conn();
+    /**
+    Add new client connection.
+
+    @param id connection id
+    @param address address to connect to
+    @param port port to connect to
+    */
+    virtual void add_connection(int id, const std::string& address, int port);
 
     virtual void stop_conn();
 
