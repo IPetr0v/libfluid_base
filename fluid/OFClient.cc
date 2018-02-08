@@ -128,7 +128,10 @@ void OFClient::base_message_callback(BaseOFConnection* c, void* data, size_t len
     // Dispatch a message and goto done
     dispatch:
         message_callback(cc, type, data, len);
-        goto done;
+        if (this->ofsc.keep_data_ownership())
+            this->free_data(data);
+        return;
+
     // Free the message and return
     done:
         c->free_data(data);
