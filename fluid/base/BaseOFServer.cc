@@ -120,10 +120,12 @@ bool BaseOFServer::start(bool block) {
                        EventLoop::thread_adapter,
                        eventloops[i]);
 
+#if __GLIBC__ >= 2 && __GLIBC_MINOR__ >= 12
         // Init thread name
         std::ostringstream thread_name;
         thread_name << "Fluid Server " << i;
         pthread_setname_np(threads[i], thread_name.str().c_str());
+#endif
     }
 
     // Start the first event loop in the calling thread if we're blocking

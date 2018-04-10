@@ -89,10 +89,12 @@ bool BaseOFClient::start() {
                        EventLoop::thread_adapter,
                        loop);
 
+#if __GLIBC__ >= 2 && __GLIBC_MINOR__ >= 12
         // Init thread name
         std::ostringstream thread_name;
         thread_name << "Fluid Client " << loop_id;
         pthread_setname_np(*thread_ptr, thread_name.str().c_str());
+#endif
     }
 
     return true;
