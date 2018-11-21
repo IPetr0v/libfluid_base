@@ -5,6 +5,7 @@ namespace fluid_base {
 
 OFClient::OFClient(int thread_num, OFServerSettings ofsc) :
         BaseOFClient(thread_num) {
+    pthread_mutex_init(&ofconnections_lock, NULL);
     this->ofsc = ofsc;
 }
 
